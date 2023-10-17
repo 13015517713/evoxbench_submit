@@ -26,9 +26,8 @@ class C10MOPProblem(Problem):
         super().__init__(n_var=benchmark.search_space.n_var, n_obj=benchmark.evaluator.n_objs,
                          n_constr=0, xl=benchmark.search_space.lb, xu=benchmark.search_space.ub,
                          type_var=np.int64, **kwargs)
-        #  设置xl和xu来确定架构的编码
         self.benchmark = benchmark
-        self.X_history = {}  # 根据下面的hash值判断重复即可
+        self.X_history = {}
         self.hash_X_history = {}
 
     def _evaluate(self, x, out, *args, **kwargs):
@@ -184,7 +183,6 @@ if __name__ == '__main__':
                 break
              
             if aux:
-                # 要300个，topk选前100个，这样应该没问题
                 pop = Population.merge(pop, algorithm.ask())
                 pop = Population.merge(pop, algorithm.ask())
             
@@ -195,7 +193,6 @@ if __name__ == '__main__':
                 norm_pred = benchmark.normalize(np.hstack([pred_err.reshape(-1, 1), pred_param.reshape(-1, 1)] ))
                 norm_sum = norm_pred.sum(axis=1)
                 
-                # 非支配排序
                 from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
                 cur_preds = np.array(norm_pred)
                 cur_X = np.array(pop.get('X'))
